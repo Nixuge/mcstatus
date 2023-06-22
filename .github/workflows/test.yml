@@ -1,4 +1,4 @@
-name: Tox test
+name: Test
 
 on:
   push:
@@ -12,7 +12,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  tox-test:
+  test:
     runs-on: ${{ matrix.platform }}
 
     strategy:
@@ -28,14 +28,12 @@ jobs:
         id: poetry_setup
         uses: ItsDrike/setup-poetry@v1
         with:
-          install-args: "--with workflow-tox --without lint"
+          install-args: "--without lint"
           python-version: "${{ matrix.python-version }}"
 
       - name: Test with tox
         shell: bash
-        run: poetry run tox
-        env:
-          PIP_USER: 0  # We want tox to use it's environments, not user installs
+        run: poetry run poe test
 
       # Steps below are here to generate and upload an artifact from
       # this workflow so that we can have the data about author and some
